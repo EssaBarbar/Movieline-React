@@ -16,7 +16,7 @@
     "react-dom": "^16.13.1",
     "react-hook-form": "^5.7.2",
     "react-router-dom": "^5.2.0",
-    "react-scripts": "3.4.1",
+    "react-scripts": "^3.4.3",
     "typescript": "~3.7.2"
   },
   "scripts": {
@@ -42,5 +42,17 @@
   },
   "devDependencies": {
     "@types/react-router-dom": "^5.1.5"
-  }
+  },
+  "description": "React E-handel",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/EssaBarbar/Movieline-React.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/EssaBarbar/Movieline-React/issues"
+  },
+  "homepage": "https://github.com/EssaBarbar/Movieline-React#readme"
 }
