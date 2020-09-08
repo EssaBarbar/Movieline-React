@@ -1,5 +1,5 @@
 import React from "react";
-import { RadioGroup, Radio } from "@blueprintjs/core"
+import { Radio } from "@blueprintjs/core"
 
 export interface Delivery {
   name: string
@@ -22,7 +22,6 @@ export const deliveryAlternatives: Delivery[] = [{
 }]
 
 
-
 interface Props {
   selectedDelivery: Delivery
   setSelectedDelivey: (delivery: Delivery) => void
@@ -32,7 +31,7 @@ export default class DeliveryMethod extends React.Component<Props> {
 
   render() {
     const { selectedDelivery, setSelectedDelivey } = this.props
-    let date = new Date()
+    /* let date = new Date() */
     function addDaystoDate(daystoadd: number) {
       let date = new Date()
       date.setDate(date.getDate() + daystoadd)
@@ -47,7 +46,7 @@ export default class DeliveryMethod extends React.Component<Props> {
               <Radio
                 label={delivery.name}
                 value={delivery.name}
-                checked={delivery.name == selectedDelivery.name}
+                checked={delivery.name === selectedDelivery.name}
                 onChange={() => setSelectedDelivey(delivery)}>
                 <span>  {delivery.price} kr ({delivery.days} days)</span>
               </Radio>

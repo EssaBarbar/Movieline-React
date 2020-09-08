@@ -1,5 +1,6 @@
 import React from 'react'
 import { Button } from "@blueprintjs/core";
+import Order from '../Order'
 
 const validcardNumberRegex = RegExp(
     /^(?:4[0-9]{12}(?:[0-9]{3})?|5[1-5][0-9]{14})$/
@@ -23,20 +24,25 @@ const validateForm = (errors: any) => {
 interface State {
     showVisaForm: boolean
     title: string
+
     cardNumber: number
     month: number
     year: number
-    cvv: number
+    cvc: number
+
     errors: {
         cardNumber: any
         month: any
         year: any
-        cvv: any
+        cvc: any
     }
 }
 
 interface Props {
     form: (form: any) => void
+    showSwishForm: boolean
+    showPaypalForm: boolean
+    showInfo: any
 }
 
 export default class VisaForm extends React.Component<Props, State> {
@@ -46,15 +52,17 @@ export default class VisaForm extends React.Component<Props, State> {
         this.state = {
             title: "VISA",
             showVisaForm: true,
+
             cardNumber: parseInt(""),
             month: parseInt(""),
             year: parseInt(""),
-            cvv: parseInt(""),
+            cvc: parseInt(""),
+
             errors: {
                 cardNumber: "",
                 month: "",
                 year: "",
-                cvv: ""
+                cvc: ""
             }
         }
     }
@@ -83,11 +91,11 @@ export default class VisaForm extends React.Component<Props, State> {
                         ? ''
                         : 'Year is not valid'
                 break;
-            case 'cvv':
-                errors.cvv =
+            case 'cvc':
+                errors.cvc =
                     validCVCRegex.test(value)
                         ? ''
-                        : 'CVV is not valid'
+                        : 'CVC is not valid'
                 break;
             default:
                 break;
@@ -100,20 +108,23 @@ export default class VisaForm extends React.Component<Props, State> {
 
     handleSubmit = (event: React.ChangeEvent<HTMLFormElement>) => {
         event.preventDefault();
-        if (validateForm(this.state.errors) && this.state.cardNumber && this.state.month && this.state.year && this.state.cvv) {
-            console.info('Valid Form')
+        if (validateForm(this.state.errors) && this.state.cardNumber && this.state.month && this.state.year && this.state.cvc && this.props.showInfo) {
+
             alert('You are valid!')
+
             const printVisaForm = {
                 title: this.state.title,
                 cardNumber: this.state.cardNumber,
                 month: this.state.month,
                 year: this.state.year,
-                cvv: this.state.cvv
+                cvc: this.state.cvc
             }
 
             this.props.form(printVisaForm)
+
             this.setState({ showVisaForm: false })
         } else {
+            alert("You have to fill in all inputs to confirm!")
             console.error('Invalid Form')
         }
     }
@@ -141,10 +152,10 @@ export default class VisaForm extends React.Component<Props, State> {
                                     {errors.year.length > 0 &&
                                         <span style={{ color: 'red' }}>{errors.year}</span>}
                                 </label>
-                                <label htmlFor="cvv">CVV:
-                        <input name="cvv" type="cvv" onChange={this.handleChange} placeholder="cvv" autoComplete="on" />
-                                    {errors.cvv.length > 0 &&
-                                        <span style={{ color: 'red' }}>{errors.cvv}</span>}
+                                <label htmlFor="cvc">CVC:
+                        <input name="cvc" type="cvc" onChange={this.handleChange} placeholder="cvc" autoComplete="on" />
+                                    {errors.cvc.length > 0 &&
+                                        <span style={{ color: 'red' }}>{errors.cvc}</span>}
                                 </label>
                                 <Button type="submit" value="submit" style={buttonStyle}>Submit</Button>
                             </form>
@@ -152,8 +163,11 @@ export default class VisaForm extends React.Component<Props, State> {
                         </div>
                         : null
                 }
-                <img style={{ maxWidth: '75%' }}
+                <img style={{ maxWidth: '75%', display: "flex", justifyContent: "center", margin: "auto" }}
                     src={require("./assets/visa.png")} alt="Visa" />
+                <div>
+                    <Order showVisaForm={this.state.showVisaForm} showSwishForm={this.props.showSwishForm} showPaypalForm={this.props.showPaypalForm} showInfo={this.props.showInfo} />
+                </div>
             </div>
         )
     }

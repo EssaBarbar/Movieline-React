@@ -8,9 +8,6 @@ interface Props {
 }
 
 export default class PaymentOrder extends React.Component<Props, State> {
-    constructor(props: Props) {
-        super(props)
-    }
 
     get orderList() {
         if (this.props.forms.length) {
@@ -18,14 +15,14 @@ export default class PaymentOrder extends React.Component<Props, State> {
                 return <PaymentItem key={form} form={form} />
             })
         } else {
-            return <h4 style={{ color: "red" }}>Inget betalningsalternativ valt.</h4>
+            return <h4 style={{ color: "red" }}>No payment option selected.</h4>
         }
     }
 
     render() {
         return (
             <div style={{ textAlign: "center" }}>
-                <h3>Betalnings bekräftelse</h3>
+                <h3>Payment confirmation:</h3>
                 {this.orderList}
             </div>
         )

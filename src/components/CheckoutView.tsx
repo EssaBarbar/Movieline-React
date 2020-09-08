@@ -1,7 +1,6 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { RouteComponentProps } from 'react-router-dom'
-import { Button, Card, Label, MenuItem, Menu, FormGroup, InputGroup, RadioGroup, Radio, Checkbox } from "@blueprintjs/core"
-import { CartConsumer, CartContextState } from '../context/cartContext'
+import { CartConsumer, ContextState } from '../context/cartContext'
 import InfoForm from './checkout-components/FormInfo'
 import DeliveryMethod, { Delivery, deliveryAlternatives } from '../components/checkout-components/Delivery'
 import Payment from './checkout-components/Payment'
@@ -12,26 +11,36 @@ interface Params {
 
 interface State {
     selectedDelivery: Delivery
+    info: boolean
 }
 
 interface Props extends RouteComponentProps<Params> {
-    form: (form: any) => void
+    showVisaForm: boolean
+    showSwishForm: boolean
+    showPaypalForm: boolean
+    showInfo: any
 }
 
 export default class CheckoutView extends React.Component<Props, State> {
 
-
     constructor(props: Props) {
         super(props)
         this.state = {
-            selectedDelivery: deliveryAlternatives[0]
+            selectedDelivery: deliveryAlternatives[0],
+            info: false
         }
+    }
+
+    showInfo = (info: any) => {
+        this.setState({ info: info }, () => {
+            console.log(this.state.info)
+        })
     }
 
     render() {
         return (
             <CartConsumer>
-                {(contextData: CartContextState) => {
+                {(contextData: ContextState) => {
                     let totalPrice = 0;
                     let pricePerItem = 0;
                     return (
@@ -62,9 +71,7 @@ export default class CheckoutView extends React.Component<Props, State> {
 
                             <div style={cardStyle} id="msg">
                                 <h2>Your Info</h2>
-                                <div style={{ fontSize: '12px' }}>Fields with * must be filled.</div>
-                                <br />
-                                <InfoForm></InfoForm>
+                                <InfoForm showInfo={this.showInfo} ></InfoForm>
                             </div>
 
                             <div style={cardStyle}>
@@ -76,13 +83,16 @@ export default class CheckoutView extends React.Component<Props, State> {
                             </div>
 
                             <div style={cardStyle}>
-                                <Payment form={this.props.form} />
+                                <Payment showVisaForm={this.props.showVisaForm} showSwishForm={this.props.showSwishForm} showPaypalForm={this.props.showPaypalForm} showInfo={this.state.info} />
                                 <br />
                             </div>
-                            <div id="contain-all" style={{ textAlign: 'right', minWidth: '100%', padding: '2%' }}>
-                                <b>Total price including sales tax and shipping: {contextData.getTotalPrice() + this.state.selectedDelivery.price} SEK</b>
-                                <div id="price-inkl"></div>
-                                <Button onClick={confirmOrder}>Confirm your order</Button>
+                            <div id="contain-all" style={{ textAlign: 'left', minWidth: '100%', padding: '2%', display: "flex", flexDirection: "column" }}>
+                                <b>Shipping: {this.state.selectedDelivery.price} SEK</b>
+                                <br />
+                                <b>VAT 25%: {contextData.getVAT()} SEK</b>
+                                <br />
+                                <b>Total incl. VAT: {contextData.getTotalPrice() + this.state.selectedDelivery.price} SEK</b>
+                                {/* <div id="price-inkl"></div> */}
                             </div>
                         </div>
                     )
@@ -92,13 +102,6 @@ export default class CheckoutView extends React.Component<Props, State> {
     }
 };
 
-function confirmOrder() {
-    if (window.confirm('Are you sure you are done?')) {
-        window.location.reload(true);
-    }
-}
-
-
 const checkoutStyle: React.CSSProperties = {
     display: "flex",
     flexDirection: 'row',
@@ -106,7 +109,6 @@ const checkoutStyle: React.CSSProperties = {
     justifyContent: "center",
 
 }
-
 
 export const cardStyle: React.CSSProperties = {
     maxWidth: "60%",

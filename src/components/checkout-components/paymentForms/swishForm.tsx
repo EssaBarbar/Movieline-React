@@ -1,5 +1,6 @@
 import React from 'react'
 import { Button } from "@blueprintjs/core";
+import Order from '../Order'
 
 const validMobileRegex = RegExp(
     /^(\+\d{1,3}[- ]?)?\d{10}$/
@@ -14,6 +15,7 @@ const validateForm = (errors: any) => {
 interface State {
     title: string
     showSwishForm: boolean
+
     mobilePhone: number
     errors: {
         mobilePhone: any
@@ -22,6 +24,9 @@ interface State {
 
 interface Props {
     form: (form: any) => void
+    showVisaForm: boolean
+    showPaypalForm: boolean
+    showInfo: any
 }
 
 export default class SwishForm extends React.Component<Props, State> {
@@ -30,7 +35,9 @@ export default class SwishForm extends React.Component<Props, State> {
         this.state = {
             title: "Swish",
             showSwishForm: true,
+
             mobilePhone: parseInt(""),
+
             errors: {
                 mobilePhone: ""
             }
@@ -52,8 +59,8 @@ export default class SwishForm extends React.Component<Props, State> {
 
     handleSubmit = (event: React.ChangeEvent<HTMLFormElement>) => {
         event.preventDefault();
-        if (validateForm(this.state.errors) && this.state.mobilePhone) {
-            console.info('Valid Form')
+        if (validateForm(this.state.errors) && this.state.mobilePhone && this.props.showInfo) {
+
             alert('You are valid! Open your BankID application.')
 
             const printSwishForm = {
@@ -61,8 +68,10 @@ export default class SwishForm extends React.Component<Props, State> {
                 mobilePhone: this.state.mobilePhone
             }
             this.props.form(printSwishForm)
-            this.setState({showSwishForm: false})
+
+            this.setState({ showSwishForm: false })
         } else {
+            alert("You have to fill in all inputs to confirm!")
             console.error('Invalid Form')
         }
     }
@@ -76,7 +85,7 @@ export default class SwishForm extends React.Component<Props, State> {
                         <div>
                             <form style={{ display: 'flex', flexDirection: 'column', width: '20%' }} onSubmit={this.handleSubmit} >
                                 <label htmlFor="mobilePhone">Mobile:
-                        <input name="mobilePhone" type="mobilePhone" onChange={this.handleChange} placeholder="mobilnummer" autoComplete="on" />
+                        <input name="mobilePhone" type="mobilePhone" onChange={this.handleChange} placeholder="mobilephone" autoComplete="on" />
                                     {errors.mobilePhone.length > 0 &&
                                         <span style={{ color: 'red' }}>{errors.mobilePhone}</span>}
                                 </label>
@@ -86,8 +95,11 @@ export default class SwishForm extends React.Component<Props, State> {
                         </div>
                         : null
                 }
-                <img style={{ maxWidth: '75%' }}
+                <img style={{ maxWidth: '75%', display: "flex", justifyContent: "center", margin: "auto" }}
                     src={require("./assets/swish.png")} alt="Swish" />
+                <div>
+                    <Order showVisaForm={this.props.showVisaForm} showSwishForm={this.state.showSwishForm} showPaypalForm={this.props.showPaypalForm} showInfo={this.props.showInfo}/>
+                </div>
             </div>
         )
     }
