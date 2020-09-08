@@ -3,7 +3,6 @@ import '../App.css';
 import Layout from './Layout'
 import { BrowserRouter } from 'react-router-dom'
 import { CartProvider } from '../context/cartContext'
-import { CheckOutProvider } from '../context/checkOutContext'
 
 function App() {
   return (
@@ -12,9 +11,7 @@ function App() {
 
       <BrowserRouter>
         <CartProvider>
-          <CheckOutProvider>
-            <Layout />
-          </CheckOutProvider>
+          <Layout />
         </CartProvider>
       </BrowserRouter>
 

@@ -4,6 +4,7 @@ import VisaForm from './paymentForms/visaForm'
 import SwishForm from './paymentForms/swishForm'
 import PaypalForm from './paymentForms/paypalForm'
 import PaymentOrder from './paymentForms/paymentOrder'
+import { Switch } from 'react-router-dom';
 
 interface State {
     isVisaSelected: boolean
@@ -14,10 +15,7 @@ interface State {
 }
 
 interface Props {
-    showVisaForm: boolean
-    showSwishForm: boolean
-    showPaypalForm: boolean
-    showInfo: any
+    form: (form: any) => void
 }
 
 export default class Payment extends React.Component<Props, State> {
@@ -34,17 +32,17 @@ export default class Payment extends React.Component<Props, State> {
 
     visaHandleClick = () => {
         this.setState({ isVisaSelected: true, isSwishSelected: false, isPaypalSelected: false })
-        this.setState({ showMenu: false })
+        this.setState({showMenu: false})
     }
 
     swishHandleClick = () => {
         this.setState({ isSwishSelected: true, isVisaSelected: false, isPaypalSelected: false })
-        this.setState({ showMenu: false })
+        this.setState({showMenu: false})
     }
 
     paypalHandleClick = () => {
         this.setState({ isPaypalSelected: true, isVisaSelected: false, isSwishSelected: false })
-        this.setState({ showMenu: false })
+        this.setState({showMenu: false})
     }
 
     form = (form: any) => {
@@ -62,22 +60,22 @@ export default class Payment extends React.Component<Props, State> {
             <div>
                 <h2>Payment</h2>
                 {
-                    this.state.showMenu ?
-                        <Menu id="menu">
-                            <h4>Choose your payment method</h4>
-                            <MenuItem text="Show alternatives..." shouldDismissPopover={true}>
+                    this.state.showMenu?
+                    <Menu id="menu">
+                        <h4>Choose your payment method</h4>
+                        <MenuItem text="Show alternatives..." shouldDismissPopover={true}>
 
-                                <MenuItem text="Visa Card" onClick={this.visaHandleClick} />
-                                <MenuItem text="Swish" onClick={this.swishHandleClick} />
-                                <MenuItem text="PayPal" onClick={this.paypalHandleClick} />
-                            </MenuItem>
-                        </Menu>
-                        : null
+                            <MenuItem text="Visa Card" onClick={this.visaHandleClick} />
+                            <MenuItem text="Swish" onClick={this.swishHandleClick} />
+                            <MenuItem text="PayPal" onClick={this.paypalHandleClick} />
+                        </MenuItem>
+                    </Menu>
+                    :null
                 }
                 <div>
-                    {this.state.isVisaSelected && <VisaForm form={this.form} showSwishForm={this.props.showSwishForm} showPaypalForm={this.props.showPaypalForm} showInfo={this.props.showInfo} />}
-                    {this.state.isSwishSelected && <SwishForm form={this.form} showVisaForm={this.props.showVisaForm} showPaypalForm={this.props.showPaypalForm} showInfo={this.props.showInfo} />}
-                    {this.state.isPaypalSelected && <PaypalForm form={this.form} showVisaForm={this.props.showVisaForm} showSwishForm={this.props.showSwishForm} showInfo={this.props.showInfo} />}
+                    {this.state.isVisaSelected && <VisaForm form={this.form} />}
+                    {this.state.isSwishSelected && <SwishForm form={this.form} />}
+                    {this.state.isPaypalSelected && <PaypalForm form={this.form} />}
                 </div>
                 <div>
                     <PaymentOrder forms={this.state.forms} />

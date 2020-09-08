@@ -1,8 +1,8 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { RouteComponentProps } from 'react-router-dom'
 import { Link } from 'react-router-dom'
-import { CartConsumer, ContextState } from '../context/cartContext'
-import { Button } from '@blueprintjs/core'
+import { CartConsumer, CartContextState } from '../context/cartContext'
+import { Button, Spinner } from '@blueprintjs/core'
 
 interface Params {
     cart: string
@@ -10,12 +10,13 @@ interface Params {
 
 interface Props extends RouteComponentProps<Params> { }
 
+// Kundvagnsida- Cartpage
 function CartView(props: Props) {
     const cart = props.match.params.cart
-    
+    // const [price, setPrice] = useState(0);
     return (
         <CartConsumer>
-            {(contextData: ContextState) => {
+            {(contextData: CartContextState) => {
                 let totalPrice = 0;
                 return (
                     <div style={cartContainer}>
@@ -26,30 +27,30 @@ function CartView(props: Props) {
                                     totalPrice = totalPrice + cartItem.product.price * cartItem.quantity;
                                     return (
                                         <div key={cartItem.product.id} style={singleCartItem}>
-                                            <h3 style={childrenFlex}>Quantity: <br/> x {cartItem.quantity}</h3>
+                                            <h3 style={childrenFlex}>Quantity: <br /> x {cartItem.quantity}</h3>
                                             <h3 style={childrenFlex}>{cartItem.product.title}</h3>
                                             <img src={require("./../assets/" + cartItem.product.img)} alt="pic" style={childrenFlex} />
                                             <h3 style={childrenFlex}>Price for single item: {cartItem.product.price} SEK</h3>
                                             <div style={childrenFlex}>
-                                             <Button style={deleteButton} className="bp3-intent-danger" onClick={() => contextData.deletefromcart(cartItem.product, index)}>Delete from cart</Button>
+                                                <Button style={deleteButton} className="bp3-intent-danger" onClick={() => contextData.deletefromcart(cartItem.product, index)}>Delete from cart</Button>
                                             </div>
-                                            
+
                                         </div>
-                                    ) 
-                                } 
-                                ) 
+                                    )
+                                }
+                                )
                                 :
-                                (<div style={{textAlign: 'center'}}>
+                                (<div style={{ textAlign: 'center' }}>
                                     <h4>No items in cart...</h4>
-                                    <img src="https://shop.myfelt.com/skin/frontend/rwd/myfelt-2018/images/cart-noitem-mobile.gif" alt="empty-cart-gif"/>
+                                    <img src="https://shop.myfelt.com/skin/frontend/rwd/myfelt-2018/images/cart-noitem-mobile.gif" alt="empty-cart-gif" />
 
                                 </div>)
                         }
-                        <h1 style={{textAlign: 'center', borderBottom: 'grey solid 1px'}}>{contextData.cartItems.length ? "Your current saldo: " + totalPrice : "Your current saldo: 0"} SEK</h1> 
-                        <div style={{textAlign: 'center'}}>Check your order. If everything is right than proceed to {'>>'}
-                        <Link to='/checkout/'>
-                            <Button className="bp3-minimal"><b>CHECKOUT</b></Button>
-                        </Link>
+                        <h1 style={{ textAlign: 'center', borderBottom: 'grey solid 1px' }}>{contextData.cartItems.length ? "Your current saldo: " + totalPrice : "Your current saldo: 0"} SEK</h1>
+                        <div style={{ textAlign: 'center' }}>Check your order. If everything is right than proceed to {">>"}
+                            <Link to='/checkout/'>
+                                <Button className="bp3-minimal"><b>CHECKOUT</b></Button>
+                            </Link>
                         </div>
                     </div>
                 )
