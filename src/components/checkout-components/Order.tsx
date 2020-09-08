@@ -1,5 +1,8 @@
 import React, { CSSProperties } from 'react'
 import { Button } from '@blueprintjs/core'
+import { Link } from 'react-router-dom'
+
+
 
 interface State {
     showOrderConfirm: boolean
@@ -34,7 +37,7 @@ export default class Order extends React.Component<Props, State> {
                 <Button onClick={this.confirmOrderHandler}>Confirm your order</Button>
                 {
                     this.state.showOrderConfirm ?
-                        <div style={{ display: "flex", justifyContent: "center" }}>
+                        < div style={{ display: "flex", justifyContent: "center" }}>
                             <h3 style={text}>Your order is completed!</h3>
                         </div>
                         : null
