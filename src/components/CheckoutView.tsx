@@ -3,7 +3,7 @@ import { RouteComponentProps } from 'react-router-dom'
 import { CartConsumer, ContextState } from '../context/cartContext'
 import InfoForm from './checkout-components/FormInfo'
 import DeliveryMethod, { Delivery, deliveryAlternatives } from '../components/checkout-components/Delivery'
-import Payment from './checkout-components/Payment'
+import { Button } from "@blueprintjs/core"
 
 interface Params {
     checkout: string
@@ -35,6 +35,10 @@ export default class CheckoutView extends React.Component<Props, State> {
         this.setState({ info: info }, () => {
             console.log(this.state.info)
         })
+    }
+
+    fetchToExpress = () => {
+        console.log("will do the fetch")
     }
 
     render() {
@@ -83,8 +87,7 @@ export default class CheckoutView extends React.Component<Props, State> {
                             </div>
 
                             <div style={cardStyle}>
-                                <Payment showVisaForm={this.props.showVisaForm} showSwishForm={this.props.showSwishForm} showPaypalForm={this.props.showPaypalForm} showInfo={this.state.info} />
-                                <br />
+                                <Button onClick={this.fetchToExpress}>Go to checkout</Button>
                             </div>
                             <div id="contain-all" style={{ textAlign: 'left', minWidth: '100%', padding: '2%', display: "flex", flexDirection: "column" }}>
                                 <b>Shipping: {this.state.selectedDelivery.price} SEK</b>
