@@ -5,6 +5,12 @@ import InfoForm from './checkout-components/FormInfo'
 import DeliveryMethod, { Delivery, deliveryAlternatives } from '../components/checkout-components/Delivery'
 import { Button } from "@blueprintjs/core"
 
+import { loadStripe } from '@stripe/stripe-js'
+
+
+const stripePromise =
+    loadStripe('pk_test_51HMToQA2xvILlZPTCMc0fMPxYXOsu49C8DjEQqJOt7DwabOkbQ5RLd1GKPOOR8xtrytoKjxHK9uhO7H0bkMYuPsA00LjQvhr9Z');
+
 interface Params {
     checkout: string
 }
@@ -37,9 +43,28 @@ export default class CheckoutView extends React.Component<Props, State> {
         })
     }
 
-    fetchToExpress = () => {
-        console.log("will do the fetch")
-    }
+    fetchToExpress = async () => {
+        console.log("doing fetch")
+        // Get Stripe.js instance
+        const stripe: any = await stripePromise;
+
+        // Call your backend to create the Checkout Session
+        const response = await fetch('http://localhost:4000/create-checkout-session', { method: 'POST' });
+
+        const session = await response.json();
+
+        // When the customer clicks on the button, redirect them to Checkout.
+        const result = await stripe.redirectToCheckout({
+            sessionId: session.id,
+        });
+
+        if (result.error) {
+            // If `redirectToCheckout` fails due to a browser or network
+            // error, display the localized error message to your customer
+            // using `result.error.message`.
+        }
+    };
+
 
     render() {
         return (
