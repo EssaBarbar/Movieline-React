@@ -79,9 +79,6 @@ app.post("/check-if-paid", async (req, res) => {
                 })
             }
         })
-
-
-
         res.json(true)
     } else {
         res.json(false)
