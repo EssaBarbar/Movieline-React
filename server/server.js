@@ -19,7 +19,6 @@ let pendingOrders = []
 
 app.post("/create-checkout-session", async (req, res) => {
 
-    console.log(req.body.totalPrice)
     const session = await stripe.checkout.sessions.create({
         payment_method_types: ["card"],
         line_items: [
@@ -57,11 +56,18 @@ app.post("/check-if-paid", async (req, res) => {
     );
     let theRequestedId = req.body.id
     let isPaid = response.payment_status
-    if (isPaid) {
-        let foundOrder = pendingOrders.find((order) => order.id == theRequestedId)
-        console.log(foundOrder, 'here is the roder')
+    if (isPaid == 'paid') {
+        function orderIsPaid(order) {
+            return order.orderId == theRequestedId
+        }
+        let foundOrder = pendingOrders.find(orderIsPaid)
         let orderToJson = JSON.stringify(foundOrder)
-        fs.writeFile('./orders.json', orderToJson, 'utf8', callback)
+        fs.writeFile('./orders.json', orderToJson, 'utf8', function (err){
+            if (err) {
+                return console.log(err)
+            } 
+            console.log('the file was saved')
+        })
         res.json(true)
     } else {
         res.json(false)
