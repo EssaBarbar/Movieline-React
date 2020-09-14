@@ -52,25 +52,16 @@ app.post("/create-checkout-session", async (req, res) => {
 
 
 app.post("/check-if-paid", async (req, res) => {
-    console.log('chaeckif paid')
-    const isPaid = await stripe.checkout.sessions.retrieve(
+    const response = await stripe.checkout.sessions.retrieve(
         req.body.id
-    ).payment_status;
-    console.log(await stripe.checkout.sessions.retrieve(
-        req.body.id
-    ).payment_status)
-    await console.log(isPaid,'befoer if')
+    );
+    let theRequestedId = req.body.id
+    let isPaid = response.payment_status
     if (isPaid) {
-        console.log(req.body.id, isPaid, 'afet is paid')
-        pendingOrders.find(function(order){
-            if (order.orderId == req.body.id) {
-                console.log(order, 'here is the roder')
-                let orders = JSON.stringify(order)
-                fs.writeFile('./orders.json', orders, 'utf8', callback)
-
-            }
-            
-        })
+        let foundOrder = pendingOrders.find((order) => order.id == theRequestedId)
+        console.log(foundOrder, 'here is the roder')
+        let orderToJson = JSON.stringify(foundOrder)
+        fs.writeFile('./orders.json', orderToJson, 'utf8', callback)
         res.json(true)
     } else {
         res.json(false)
@@ -80,3 +71,4 @@ app.post("/check-if-paid", async (req, res) => {
 
 
 app.listen(4000, () => console.log('Server is running on port 4000'))
+
