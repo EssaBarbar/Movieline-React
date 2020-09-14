@@ -17,9 +17,9 @@ app.use(express.json())
 
 let pendingOrders = []
 
+
 app.post("/create-checkout-session", async (req, res) => {
 
-    console.log(req.body.totalPrice)
     const session = await stripe.checkout.sessions.create({
         payment_method_types: ["card"],
         line_items: [
@@ -44,11 +44,9 @@ app.post("/create-checkout-session", async (req, res) => {
         order: req.body.cart,
     }
 
-    console.log("prnding order is ", pendingOrder)
 
     pendingOrders.push(pendingOrder)
 
-    console.log("the push is done ", pendingOrders)
 
 
     res.json({ id: session.id });
@@ -65,19 +63,25 @@ app.post("/check-if-paid", async (req, res) => {
         function OrderIsPaid(order) {
             return order.orderId == theRequestedId;
         }
-        console.log("pending orders console ", pendingOrders)
         let foundOrder = pendingOrders.find(OrderIsPaid)
-        console.log(foundOrder, 'here is the order')
-
-
-        let orderToJson = JSON.stringify(foundOrder)
-        fs.writeFile('./orders.json', orderToJson, 'utf8', function (err) {
+        fs.readFile('./orders.json', 'utf8', function (err, data) {
             if (err) {
-                return console.log(err);
+                console.log(err)
+            } else {
+                const file = JSON.parse(data);
+                file.orders.push(foundOrder)
+                const orderToJson = JSON.stringify(file)
+                fs.writeFile('./orders.json', orderToJson, 'utf8', function (err) {
+                    if (err) {
+                        return console.log(err);
+                    }
+                    console.log("The file was saved!");
+                })
             }
-            console.log("The file was saved!");
         })
-        console.log("done to json")
+
+
+
         res.json(true)
     } else {
         res.json(false)

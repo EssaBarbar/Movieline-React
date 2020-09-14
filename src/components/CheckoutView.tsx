@@ -40,7 +40,6 @@ export default class CheckoutView extends React.Component<Props, State> {
 
     showInfo = (info: any) => {
         this.setState({ info: info }, () => {
-            console.log(this.state.info)
         })
     }
 
@@ -50,7 +49,6 @@ export default class CheckoutView extends React.Component<Props, State> {
 
         // const newCart = this.context.cartItems
 
-        console.log("doing first fetch to server")
         // Get Stripe.js instance
         const stripe: any = await stripePromise;
 
