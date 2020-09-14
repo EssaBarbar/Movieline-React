@@ -44,7 +44,11 @@ app.post("/create-checkout-session", async (req, res) => {
         order: req.body.cart,
     }
 
+    console.log("prnding order is ", pendingOrder)
+
     pendingOrders.push(pendingOrder)
+
+    console.log("the push is done ", pendingOrders)
 
 
     res.json({ id: session.id });
@@ -57,18 +61,28 @@ app.post("/check-if-paid", async (req, res) => {
     );
     let theRequestedId = req.body.id
     let isPaid = response.payment_status
-    if (isPaid) {
-        let foundOrder = pendingOrders.find((order) => order.id == theRequestedId)
-        console.log(foundOrder, 'here is the roder')
+    if (isPaid == "paid") {
+        function OrderIsPaid(order) {
+            return order.orderId == theRequestedId;
+        }
+        console.log("pending orders console ", pendingOrders)
+        let foundOrder = pendingOrders.find(OrderIsPaid)
+        console.log(foundOrder, 'here is the order')
+
+
         let orderToJson = JSON.stringify(foundOrder)
-        fs.writeFile('./orders.json', orderToJson, 'utf8', callback)
+        fs.writeFile('./orders.json', orderToJson, 'utf8', function (err) {
+            if (err) {
+                return console.log(err);
+            }
+            console.log("The file was saved!");
+        })
+        console.log("done to json")
         res.json(true)
     } else {
         res.json(false)
     }
 });
-
-
 
 app.listen(4000, () => console.log('Server is running on port 4000'))
 

@@ -25,7 +25,6 @@ export default class successPayment extends React.Component<RouteComponentProps,
         // Get Stripe.js instance
         const stripe: any = await stripePromise;
 
-        console.log(sessionId)
 
         // Call your backend to create the Checkout Session
         const response = await fetch('http://localhost:4000/check-if-paid', {
@@ -39,11 +38,10 @@ export default class successPayment extends React.Component<RouteComponentProps,
         });
 
         const isPaid = await response.json();
-        console.log(isPaid)
         if (isPaid) {
             console.log("will add to json file")
         }
-        else { console.log("you are fking spammer") }
+        else { console.log("not working") }
 
         // When the customer clicks on the button, redirect them to Checkout.
 
