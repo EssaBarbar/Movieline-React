@@ -51,7 +51,9 @@ export default class successPayment extends React.Component<RouteComponentProps,
 
         return (
             <div>
-                hellloooooooo
+                    <h1>Thank you for shopping at MovieLine.</h1> 
+                    <p>Dear costumer your order will be shipped as soon as possible.</p>
+                    <h2>Have a great day!</h2>
             </div>
         )
     }
