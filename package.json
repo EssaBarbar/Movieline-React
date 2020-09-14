@@ -16,6 +16,7 @@
     "@types/react-dom": "^16.9.0",
     "@types/stripe": "^7.13.24",
     "cors": "^2.8.5",
+    "express": "^4.17.1",
     "qs": "^6.9.4",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",

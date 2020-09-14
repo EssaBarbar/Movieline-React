@@ -1,7 +1,8 @@
 const express = require('express')
-const { response } = require('express')
 const cors = require('cors')
 require('dotenv').config('.env')
+const fs = require('fs');
+const { json } = require('express');
 
 const app = express()
 app.use(cors())
@@ -51,10 +52,25 @@ app.post("/create-checkout-session", async (req, res) => {
 
 
 app.post("/check-if-paid", async (req, res) => {
+    console.log('chaeckif paid')
     const isPaid = await stripe.checkout.sessions.retrieve(
         req.body.id
     ).payment_status;
+    console.log(await stripe.checkout.sessions.retrieve(
+        req.body.id
+    ).payment_status)
+    await console.log(isPaid,'befoer if')
     if (isPaid) {
+        console.log(req.body.id, isPaid, 'afet is paid')
+        pendingOrders.find(function(order){
+            if (order.orderId == req.body.id) {
+                console.log(order, 'here is the roder')
+                let orders = JSON.stringify(order)
+                fs.writeFile('./orders.json', orders, 'utf8', callback)
+
+            }
+            
+        })
         res.json(true)
     } else {
         res.json(false)
