@@ -1,7 +1,7 @@
 import React, { createContext, Component } from 'react'
 import { Product } from '../products'
 
-interface CartItem {
+export interface CartItem {
     product: Product,
     quantity: number
 }
@@ -105,7 +105,7 @@ export class CartProvider extends Component<{}, ProviderState> {
             productVAT = productVAT + VAT.product.price * 0.2 * VAT.quantity
         })
 
-        return Math.round( productVAT * 100 + Number.EPSILON ) / 100
+        return Math.round(productVAT * 100 + Number.EPSILON) / 100
     }
 
     render() {

@@ -1,9 +1,10 @@
 import React from 'react'
 import { RouteComponentProps } from 'react-router-dom'
-import { CartConsumer, ContextState } from '../context/cartContext'
+import { CartConsumer, ContextState, CartContext } from '../context/cartContext'
 import InfoForm from './checkout-components/FormInfo'
 import DeliveryMethod, { Delivery, deliveryAlternatives } from '../components/checkout-components/Delivery'
 import { Button } from "@blueprintjs/core"
+import { CartItem } from '../context/cartContext'
 
 import { loadStripe } from '@stripe/stripe-js'
 
@@ -43,17 +44,31 @@ export default class CheckoutView extends React.Component<Props, State> {
         })
     }
 
-    fetchToExpress = async () => {
-        console.log("doing fetch")
+    fetchToExpress = async (cartItems: CartItem[], totalPrice: Number) => {
+
+
+
+        // const newCart = this.context.cartItems
+
+        console.log("doing first fetch to server")
         // Get Stripe.js instance
         const stripe: any = await stripePromise;
 
         // Call your backend to create the Checkout Session
-        const response = await fetch('http://localhost:4000/create-checkout-session', { method: 'POST' });
+        const response = await fetch('http://localhost:4000/create-checkout-session', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                cart: cartItems,
+                totalPrice: totalPrice
+            })
+        });
 
         const session = await response.json();
 
-        // When the customer clicks on the button, redirect them to Checkout.
+        // // When the customer clicks on the button, redirect them to Checkout.
         const result = await stripe.redirectToCheckout({
             sessionId: session.id,
         });
@@ -72,8 +87,9 @@ export default class CheckoutView extends React.Component<Props, State> {
                 {(contextData: ContextState) => {
                     let totalPrice = 0;
                     let pricePerItem = 0;
+                    let priceIncVat = contextData.getTotalPrice() + this.state.selectedDelivery.price
                     return (
-                        <div style={checkoutStyle} className="pt-card pt-elevation-0" >
+                        < div style={checkoutStyle} className="pt-card pt-elevation-0" >
                             <div style={cardStyle}>
                                 <h2>Summary of your order:</h2>
                                 <div>
@@ -112,7 +128,7 @@ export default class CheckoutView extends React.Component<Props, State> {
                             </div>
 
                             <div style={cardStyle}>
-                                <Button onClick={this.fetchToExpress}>Go to checkout</Button>
+                                <Button onClick={() => { this.fetchToExpress(contextData.cartItems, priceIncVat) }}>Go to checkout</Button>
                             </div>
                             <div id="contain-all" style={{ textAlign: 'left', minWidth: '100%', padding: '2%', display: "flex", flexDirection: "column" }}>
                                 <b>Shipping: {this.state.selectedDelivery.price} SEK</b>
@@ -124,11 +140,14 @@ export default class CheckoutView extends React.Component<Props, State> {
                             </div>
                         </div>
                     )
-                }}
-            </CartConsumer>
+                }
+                }
+            </CartConsumer >
         )
     }
 };
+
+CheckoutView.contextType = CartContext
 
 const checkoutStyle: React.CSSProperties = {
     display: "flex",
