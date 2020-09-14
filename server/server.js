@@ -1,5 +1,4 @@
 const express = require('express')
-const { response } = require('express')
 const cors = require('cors')
 require('dotenv').config('.env')
 
@@ -51,9 +50,11 @@ app.post("/create-checkout-session", async (req, res) => {
 
 
 app.post("/check-if-paid", async (req, res) => {
-    const isPaid = await stripe.checkout.sessions.retrieve(
+    const response = await stripe.checkout.sessions.retrieve(
         req.body.id
-    ).payment_status;
+    );
+    let isPaid = response.payment_status
+    console.log(isPaid)
     if (isPaid) {
         res.json(true)
     } else {
